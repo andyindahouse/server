@@ -1,0 +1,236 @@
+'use strict';
+
+var mongoose = require('mongoose'),
+  Schema = mongoose.Schema,
+  crypto = require('crypto'),
+  Q = require('q'),
+  Promise = require('mpromise');
+
+var UserSchema = new Schema({
+
+  avatar: {
+    type: String,
+    unique: false,
+    required: false
+  },
+
+  picbg: {
+    type: String,
+    unique: false,
+    required: false
+  },
+
+  state: {
+    type: String,
+    unique: false,
+    required: false
+  },
+
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
+
+  username: {
+    type: String,
+    unique: true,
+    required: true
+  },
+
+  hashedPassword: String,
+  salt: String,
+  name: String,
+  admin: Boolean,
+  guest: Boolean,
+  provider: String,
+
+  events    :[{
+    _id: String,
+    title: String,    
+    place: String,
+    date: Date,
+    pic: String
+  }],
+
+  contacts  :[{
+    _id: String,
+    username: String,
+    state: String,
+    pic: String,
+    email: String
+  }]
+});
+
+//VALIDATIONS
+
+var validatePresenceOf =  function (value) {
+
+  return value && value.length;
+};
+
+/*
+var findExistingUsername = function(value){
+	console.log('existusername');
+ 	return mongoose.models["User"].findOne({username: value})
+  	.lean()
+  	.exec();
+};
+
+var findExistingEmail= function(value){
+	console.log('existusername');
+ 	return mongoose.models["User"].findOne({email: value})
+  	.lean()
+  	.exec();
+};
+
+var validateEmail = function(value){
+	console.log('existusername');
+ 	var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    console.log('Email valido?:' + emailRegex.test(value));
+    return emailRegex.test(value);
+};
+
+var addUser = function(data){
+	console.log('existusername');
+ 	return mongoose.models["User"].create(data);
+};
+*/
+
+var validateEmail = function(value){
+	console.log('existusername');
+ 	var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+    console.log('Email valido?:' + emailRegex.test(value));
+    return emailRegex.test(value);
+};
+
+UserSchema.methods = {
+
+validateAndAddUser: function() {
+	
+
+	var findExistingUsername = mongoose.models["User"].findOne({email: this.username})
+							  	.lean()
+							  	.exec();
+
+	var findExistingEmail = mongoose.models["User"].findOne({email: this.email})
+						  	.lean()
+						  	.exec();
+
+  	var addUser = mongoose.models["User"].create(this);
+
+  	var p = new Promise;
+
+  	p.chain(findExistingUsername);
+
+
+  	findExistingUsername
+	.then(function(existingUsername){
+		if(existingUsername)
+			throw new Error('El nombre de usuario ya está cogido.');
+		console.log('existemail');
+	})
+	.chain(findExistingEmail)
+	.then(function(existingEmail){
+			if(existingEmail)
+				throw new Error('El correo electrónico ya está registrado.');
+
+			console.log('existusername');
+	})
+	.chain(addUser)
+	.then(function(error){
+		console.log(error);
+	});
+
+	return p;
+
+	/*
+	  	Q.all([
+	  		findExistingUsername,
+	  		findExistingEmail
+	  		])
+	  		.then(function(userValidated){
+
+	  			console.log(userValidated);
+
+	  			return addUser;
+	  		})
+	  		.catch(function(error){
+
+	  			console.log('error');
+
+	  			return;
+	  		});
+	*/
+
+  	/*
+  	return findExistingUsername
+	  		.then(function(existingUsername){
+					if(existingUsername)
+						throw new Error('El nombre de usuario ya está cogido.');
+
+					console.log('existemail');
+					return findExistingEmail;
+			})
+			.then(function(existingEmail){
+					if(existingEmail)
+						throw new Error('El correo electrónico ya está registrado.');
+
+					console.log('existusername');
+					return addUser;
+			})
+			.then(null, function(error){
+				console.log(error);
+			});*/
+
+
+
+
+
+	/*
+	return findExistingUsername(this.username)
+			.then(function(existingUser){
+				if(existingUser)
+					throw 'El nombre de usuario ya está cogido.'
+			})
+			.chain(findExistingEmail(this.email))
+			.then(function(existingEmail){
+				if(existingEmail)
+					throw 'El correo electrónico ya está registrado.'
+			})
+			.chain(addUser(this))
+			.then(function(){
+		    	console.log('user creado con exito.');			    	
+		    })
+		    .onResolve(function(){
+		    	console.log('success');
+		    	res.status(200).json({
+			            payload: 'user',
+			            message: "Cuenta creada con éxito"});
+		    })
+		    .onReject(function(err){
+		    	console.log('err');
+		    	res.status(400).json({
+			          payload: err.code,
+			          message: err});
+		    });*/	
+},
+
+authenticate: function(plainText) {
+    return this.encryptPassword(plainText) === this.hashedPassword;
+},
+
+makeSalt: function() {
+    return crypto.randomBytes(16).toString('base64');
+},
+
+encryptPassword: function(password) {
+    if (!password || !this.salt) return '';
+    var salt = new Buffer(this.salt, 'base64');
+    return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+}
+
+};
+
+mongoose.model('User', UserSchema);
+

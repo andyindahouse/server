@@ -1,0 +1,33 @@
+{
+  "name": "ToollifeAppServer",
+  "author": "andysindahaus",
+  "version": "0.1.0",
+  "engines": {
+    "node":"0.10.32"
+  },
+  "dependencies": {
+    "express": "~4.9.7",        
+    "morgan": "~1.1.1",
+    "body-parser": "~1.4.3",
+    "mongoose": "latest",    
+    "passport": "0.2.1",
+    "passport-local": "1.0.0",
+    "bcrypt-nodejs": "0.0.3",      
+    "express-session": "1.8.2",
+    "underscore": "~1.5.2",
+    "connect-mongo": "~0.4.0",
+    "jwt-simple": "0.2.0",
+    "moment": "2.9.0",
+    "q": "1.0.1",
+    "mpromise": "0.5.5"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-develop": "~0.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-compass": "~0.9.0",
+    "request": "~2.36.0",
+    "time-grunt": "~0.3.2",
+    "load-grunt-tasks": "~0.6.0"
+  }
+}
