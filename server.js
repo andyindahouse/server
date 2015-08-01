@@ -13,6 +13,7 @@ var express = require('express'),
 // Connect to database and passport config
 var db = require('./config/db.js');
 require('./app/models/User.js');
+require('./app/models/Event.js');
 
 // App Config..
 // Express/mongo session storage
