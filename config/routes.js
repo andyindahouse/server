@@ -20,6 +20,7 @@ module.exports = function(app) {
   // todo: probably should be a query on users
   app.get('/auth/check_username/:username', user.exists);
   app.get('/auth/check_email/:email', user.existsEmail);
+  app.get('/user/check_update?', user.canUpdate);
 
 
   

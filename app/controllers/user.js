@@ -36,7 +36,7 @@ exports.show = function (req, res, next) {
  */
 exports.exists = function (req, res, next) {
   var username = req.params.username;
-
+  console.log(req.params.username);
   UserModel.findOne({ username : username }, function (err, user) {
     if (err) {
       return next(new Error('Failed to load User ' + username));
@@ -50,14 +50,15 @@ exports.exists = function (req, res, next) {
       res.json({exists: false});
     }
   });
-}
+};
 
 /**
  *  Email exists
  *  returns {exists}
- */
+ */      
 
 exports.existsEmail = function (req, res, next) {
+  console.log('asdasda' + req.params.email);
   var email = req.params.email;
   
   UserModel.findOne({ email : email }, function (err, user) {
@@ -73,4 +74,34 @@ exports.existsEmail = function (req, res, next) {
       res.json({exists: false});
     }
   });
-}
+};
+
+exports.canUpdate = function (req, res, next) {
+  console.log(req.query.attr);
+  console.log(req.query.type);
+  var attr = req.params.attr;
+  var query = {};
+
+  switch(req.query.type) {
+    case "username":
+
+    break;
+    case "email":
+
+    break;
+  }
+  
+  UserModel.findOne(query, function (err, user) {
+    if (err) {
+      return next(new Error('Failed to load User ' + username));
+    }
+
+    if(user) {
+      console.log('existe', user);
+      res.json({exists: true});
+    } else {
+      console.log('no existe');
+      res.json({exists: false});
+    }
+  });
+};
