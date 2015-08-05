@@ -5,13 +5,13 @@ var path = require('path');
 
 module.exports = function(app) {
 	
-  //////////////////////////////////////////////////////// Auth zone
+  //////////////////////////////////////////////////////// Auth & User zone
   var auth = require('./auth');
   app.get('/auth/me', auth.validateToken, auth.ensureAuthenticated, auth.getUser);
   app.post('/auth/register', auth.validateToken, auth.ensureUnauthenticated, auth.createUser);
   app.post('/auth/login', auth.validateToken, auth.ensureUnauthenticated, auth.loginUser);
   app.get('/auth/logout', auth.validateToken, auth.ensureAuthenticated, auth.logoutUser);
-  //////////////////////////////////////////////////////// Auth zone
+  
 
   
 
@@ -22,8 +22,14 @@ module.exports = function(app) {
   app.get('/auth/check_email/:email', user.existsEmail);
   app.get('/user/check_update?', user.canUpdate);
 
+  //////////////////////////////////////////////////////// Event zone
+  var event = require('../app/controllers/event');
 
-  
+  app.get('/event/:id', auth.validateToken, auth.ensureAuthenticated, event.getEvent);
+  app.get('/event/all', auth.validateToken, auth.ensureAuthenticated, event.getEvents);
+  app.post('/event/create', auth.validateToken, auth.ensureAuthenticated, event.createEvent);
+  app.put('/event/update', auth.validateToken, auth.ensureAuthenticated, event.updateEvent);
+  app.delete('/event/delete', auth.validateToken, auth.ensureAuthenticated, event.deleteEvent);
 
 
 
