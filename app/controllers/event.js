@@ -84,7 +84,7 @@ exports.createEvent = function (req, res) {
   var success = function(){
 
     return res.status(200).json({
-            payload: newUser.user_info,
+            payload: newEvent,
             message: "Evento creado con éxito"});
   };
 
@@ -100,10 +100,13 @@ exports.createEvent = function (req, res) {
   var newEvent = new EventModel(req.body);
 
   newEvent.save(function(err) {
-    if(err)
+    if(err){
+      console.log('Errrrrorrrrrrrrrrr!!!');
       error(err);
-    else
+    }else{
+      console.log('Succeessssssesses!!!');
       success();
+    }
   });
   
 };

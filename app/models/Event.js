@@ -30,7 +30,7 @@ var EventSchema = new Schema({
   },
 
   privacity: {
-    type: String,
+    type: Number,
     unique: false,
     required: true
   },
@@ -58,7 +58,7 @@ var EventSchema = new Schema({
   description: {
     type: String,
     unique: false,
-    required: true,
+    required: false,
     maxlegth: maxlegth(400)
   },
 
